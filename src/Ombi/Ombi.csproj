@@ -93,6 +93,7 @@
     <ProjectReference Include="..\Ombi.Settings\Ombi.Settings.csproj" />
     <ProjectReference Include="..\Ombi.TheMovieDbApi\Ombi.Api.TheMovieDb.csproj" />
     <ProjectReference Include="..\Ombi.Updater\Ombi.Updater.csproj" />
+    <ProjectReference Include="..\Ombi.MusicBrainz\Ombi.MusicBrainz.csproj" />
   </ItemGroup>
 
   <ItemGroup>
