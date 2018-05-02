@@ -8,6 +8,6 @@ namespace Ombi.MusicBrainz
     {
         Task<Album> GetAlbumInformation(string albumId);
 
-        Task<List<AlbumSearchResult>> SearchAlbum(string query);
+        Task<AlbumSearchResult> SearchAlbum(string query);
     }
 }
