@@ -6,9 +6,10 @@ using System.Net.Http;
 
 namespace Ombi.MusicBrainz
 {
-    public class MusicBrainzApi : IMusicBrainz
+    public class MusicBrainzApi
     {
-        private static readonly string baseUri = "http://musicbrainz.org/ws/2";
+        private const string userAgent = "test app ( topcat567@gmail.com )";
+        private const string baseUri = "http://musicbrainz.org/ws/2";
 
         public IApi Api { get; }
 
@@ -25,9 +26,10 @@ namespace Ombi.MusicBrainz
         public async Task<AlbumSearchResult> SearchAlbum(string query)
         {
             Request request = new Request($"/release", baseUri, HttpMethod.Get);
+            request.AddHeader("User-Agent", userAgent);
             request.FullUri = request.FullUri.AddQueryParameter("query", query);
-            request.FullUri = request.FullUri.AddQueryParameter("recordings", query);
-            request.FullUri = request.FullUri.AddQueryParameter("fmt", query);
+            request.FullUri = request.FullUri.AddQueryParameter("inc", "recordings");
+            request.FullUri = request.FullUri.AddQueryParameter("fmt", "json");
 
             return await Api.Request<AlbumSearchResult>(request);
         }

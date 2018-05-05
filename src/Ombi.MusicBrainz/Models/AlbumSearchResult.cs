@@ -10,7 +10,6 @@ namespace Ombi.MusicBrainz
         [JsonProperty("releases")]
         public AlbumSearchResultEntity[] Albums { get; set; }
 
-
         public class AlbumSearchResultEntity
         {
             [JsonProperty("id")]
