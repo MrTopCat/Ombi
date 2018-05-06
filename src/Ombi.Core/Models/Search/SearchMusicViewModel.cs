@@ -4,7 +4,7 @@ using Ombi.Store.Entities;
 
 public class SearchMusicViewModel : SearchViewModel
 {
-    public string MusicBrainzID { get; set; }
+    public string ArtistID { get; set; }
 
     public string Name { get; set; }
 
@@ -18,7 +18,7 @@ public class SearchMusicViewModel : SearchViewModel
 
     public class AlbumViewModel
     {
-        public string MusicBrainzID { get; set; }
+        public string AlbumID { get; set; }
 
         public string Title { get; set; }
 

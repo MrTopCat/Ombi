@@ -79,6 +79,7 @@ namespace Ombi.DependencyInjection
             services.AddTransient<IMovieRequestEngine, MovieRequestEngine>();
             services.AddTransient<ITvRequestEngine, TvRequestEngine>();
             services.AddTransient<ITvSearchEngine, TvSearchEngine>();
+            services.AddTransient<IMusicSearchEngine, MusicSearchEngine>();
             services.AddTransient<IRuleEvaluator, RuleEvaluator>();
             services.AddTransient<IMovieSender, MovieSender>();
             services.AddTransient<IRecentlyAddedEngine, RecentlyAddedEngine>();
