@@ -7,7 +7,7 @@ using System.Net.Http;
 
 namespace Ombi.MusicBrainz
 {
-    public class MusicBrainzApi : IMusicBrainz
+    public class MusicBrainzApi : IMusicBrainzApi
     {
         private const string userAgent = "test app ( topcat567@gmail.com )";
         private const string baseUri = "http://musicbrainz.org/ws/2";

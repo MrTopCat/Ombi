@@ -5,7 +5,7 @@ using System;
 
 namespace Ombi.MusicBrainz
 {
-    public interface IMusicBrainz
+    public interface IMusicBrainzApi
     {
         Task<ArtistSearchResultsDto> SearchArtists(string query);
 
