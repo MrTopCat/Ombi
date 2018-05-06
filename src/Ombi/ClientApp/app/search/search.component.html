@@ -13,6 +13,10 @@
     <li role="presentation">
         <a id="tvTabButton" href="#TvShowTab" aria-controls="profile" role="tab" data-toggle="tab" (click)="selectTvTab()"><i class="fa fa-television"></i> {{ 'Search.TvTab' | translate }}</a>
     </li>
+
+    <li role="presentation">
+        <a id="musicTabButton" href="#MusicShowTab" aria-controls="profile" role="tab" data-toggle="tab" (click)="selectMusicTab()"><i class="fa fa-television"></i> {{ 'Search.MusicTab' | translate }}</a>
+    </li>
 </ul>
 
 <!-- Tab panes -->
@@ -24,6 +28,10 @@
 
     <div [hidden]="!showTv">
         <tv-search [issueCategories]="issueCategories" [issuesEnabled]="issuesEnabled"></tv-search>
+    </div>
+
+    <div [hidden]="!showMusic">
+        <music-search [issueCategories]="issueCategories" [issuesEnabled]="issuesEnabled"></music-search>
     </div>
 </div>
 
