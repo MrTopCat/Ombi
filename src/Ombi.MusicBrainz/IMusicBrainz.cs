@@ -9,7 +9,7 @@ namespace Ombi.MusicBrainz
     {
         Task<ArtistSearchResultsDto> SearchArtists(string query);
 
-        Task<ArtistSearchResultsDto> AlbumsForArtist(string artistID);
+        Task<ArtistEntityDto> AlbumsForArtist(string artistID);
 
         Task<AlbumDto> GetAlbumInformation(string albumId);
 

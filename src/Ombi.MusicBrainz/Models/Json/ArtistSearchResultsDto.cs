@@ -7,5 +7,17 @@ namespace Ombi.MusicBrainz.Json
     {
         [JsonProperty("artists")]
         public ArtistEntityDto[] Artists { get; set; }
+
+        public ArtistEntityDto this[int key]
+        {
+            get
+            {
+                return this.Artists[key];
+            }
+            set
+            {
+                this.Artists[key] = value;
+            }
+        }
     }
 }

@@ -50,14 +50,14 @@ namespace Ombi.MusicBrainz
             return await Api.Request<ArtistSearchResultsDto>(request);
         }
 
-        public async Task<ArtistSearchResultsDto> AlbumsForArtist(string artistID)
+        public async Task<ArtistEntityDto> AlbumsForArtist(string artistID)
         {
-            Request request = new Request($"/release/{artistID}", baseUri, HttpMethod.Get);
+            Request request = new Request($"/artist/{artistID}", baseUri, HttpMethod.Get);
             request.AddHeader("User-Agent", userAgent);
-            request.FullUri = request.FullUri.AddQueryParameter("inc", "albums");
+            request.FullUri = request.FullUri.AddQueryParameter("inc", "release-groups");
             request.FullUri = request.FullUri.AddQueryParameter("fmt", "json");
 
-            return await Api.Request<ArtistSearchResultsDto>(request);
+            return await Api.Request<ArtistEntityDto>(request);
         }
     }
 }

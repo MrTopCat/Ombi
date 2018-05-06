@@ -9,7 +9,7 @@ namespace Ombi.MusicBrainz.Json
         public string AlbumId { get; set; }
 
         [JsonProperty("first-release-date")]
-        public DateTime ReleaseDate { get; set; }
+        public string ReleaseDate { get; set; }
 
         [JsonProperty("title")]
         public string Title { get; set; }
