@@ -11,6 +11,12 @@ namespace Ombi.MusicBrainz.Json
             [JsonProperty("name")]
             public string Name { get; set; }
 
+            [JsonProperty("disambiguation")]
+            public string Disambiguation { get; set; }
+
+            [JsonProperty("score")]
+            public int Score { get; set; }
+
             [JsonProperty("release-groups")]
             public AlbumDto[] Albums { get; set; }
         }

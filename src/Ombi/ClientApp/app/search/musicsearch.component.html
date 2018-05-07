@@ -1,0 +1,58 @@
+<!-- Movie tab -->
+<div role="tabpanel" class="tab-pane active" id="MusicTab">
+    <div class="input-group">
+        <input id="search" type="text" class="form-control form-control-custom form-control-search form-control-withbuttons" (keyup)="search($event)">
+
+
+        <div class="input-group-addon right-radius">
+            <div class="btn-group">
+                <a href="#" class="btn btn-sm btn-primary-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    {{ 'Search.Suggestions' | translate }}
+                    <i class="fa fa-chevron-down"></i>
+                </a>
+                <ul class="dropdown-menu">
+                    
+                </ul>
+            </div>
+            <i class="fa fa-search"></i>
+        </div>
+    </div>
+</div>
+<br />
+<br />
+<!-- Music content -->
+<div id="musicList">
+    <div *ngIf="searchApplied && musicResults?.length <= 0" class='no-search-results'>
+        <i class='fa fa-film no-search-results-icon'></i>
+        <div class='no-search-results-text' [translate]="'Search.NoResults'"></div>
+    </div>
+
+    <div *ngFor="let result of musicResults">
+
+        <div class="row">
+
+            <div class="myBg backdrop" [style.background-image]="result.backgroundImage"></div>
+            <div class="tint" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.6) 100%);"></div>
+            <div class="col-sm-2 small-padding">
+                <img *ngIf="result.image" class="img-responsive poster" src="{{result.image}}" alt="poster">
+
+            </div>
+            <div class="col-sm-8 small-padding">
+                <div>
+                    <a href="https://musicbrainz.org/artist/{{result.artistID}}" target="_blank">
+                        <h4 *ngIf="!result.disambiguation">{{result.name}}</h4>
+                        <h4 *ngIf="result.disambiguation">{{result.name}} ({{result.disambiguation}})</h4>
+                    </a>
+                    <br/>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <br/>
+    </div>
+
+</div>
+
+
+<issue-report [movie]="true" [visible]="issuesBarVisible" (visibleChange)="issuesBarVisible = $event;" [title]="issueRequestTitle"
+    [issueCategory]="issueCategorySelected" [id]="issueRequestId" [providerId]="issueProviderId"></issue-report>

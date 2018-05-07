@@ -12,6 +12,10 @@ public class SearchMusicViewModel : SearchViewModel
 
     public string Image { get; set; }
 
+    public string BackgroundImage { get; set; }
+
+    public string Disambiguation { get; set; }
+
     public AlbumViewModel[] Albums { get; set; }
 
     public override RequestType Type => RequestType.Music;

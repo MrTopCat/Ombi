@@ -28,7 +28,9 @@ public class MusicSearchEngine : IMusicSearchEngine
     {
         List<SearchMusicViewModel> results = new List<SearchMusicViewModel>();
 
-        Array.ForEach(artistResults.Artists, artist => results.Add(Mapper.Map<SearchMusicViewModel>(artist)));        
+        var matching = Array.FindAll(artistResults.Artists, x => x.Score >= 90);
+
+        Array.ForEach(matching, artist => results.Add(Mapper.Map<SearchMusicViewModel>(artist)));        
 
         if (includeAlbums)
         {

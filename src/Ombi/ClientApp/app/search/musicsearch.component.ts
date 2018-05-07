@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Subject } from "rxjs/Subject";
 
-import { SearchService} from "../services";
+import { SearchService, ImageService } from "../services";
 
 import { IRequestEngineResult } from "../interfaces";
-import { IIssueCategory,   } from "../interfaces";
+import { IIssueCategory, } from "../interfaces";
 import { ISearchMusicResult } from "../interfaces/ISearchMusicResult";
 
 @Component({
@@ -28,7 +28,7 @@ export class MusicSearchComponent implements OnInit {
     public issueProviderId: string;
     public issueCategorySelected: IIssueCategory;
 
-    constructor(private searchService: SearchService) {
+    constructor(private searchService: SearchService, private imageService: ImageService) {
 
         this.searchChanged
             .debounceTime(600) // Wait Xms after the last event before emitting last event
@@ -43,6 +43,7 @@ export class MusicSearchComponent implements OnInit {
                     .subscribe(x => {
                         this.musicResults = x;
                         this.searchApplied = true;
+                        this.getExtraInfo();
                     });
             });
     }
@@ -78,8 +79,18 @@ export class MusicSearchComponent implements OnInit {
         this.result = {
             message: "",
             result: false,
-            errorMessage:"",
+            errorMessage: "",
         };
+    }
+
+    public getExtraInfo() {
+        this.musicResults.forEach((val, index) => {
+            if (val.image === null){
+                this.imageService.getArtistPoster(val.artistID).subscribe(x => {
+                    val.image = x;
+                });
+            }
+        });
     }
 
     public search(text: any) {

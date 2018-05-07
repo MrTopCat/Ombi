@@ -7,5 +7,6 @@ namespace Ombi.Api.FanartTv
     {
         Task<MovieResult> GetMovieImages(string movieOrImdbId, string token);
         Task<TvResult> GetTvImages(int tvdbId, string token);
+        Task<ArtistResult> GetArtistImages(string musicBrainzID, string token);
     }
 }
