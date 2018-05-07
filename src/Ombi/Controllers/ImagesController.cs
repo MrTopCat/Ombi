@@ -32,7 +32,7 @@ namespace Ombi.Controllers
         private LandingPageBackground Options { get; }
         private readonly ICacheService _cache;
 
-        [HttpGet("artist/{mbid}")]
+        [HttpGet("poster/artist/{mbid}")]
         public async Task<string> GetArtistPoster(string mbid)
         {
             var key = await _cache.GetOrAdd(CacheKeys.FanartTv, async () => await Config.Get(Store.Entities.ConfigurationTypes.FanartTv), DateTime.Now.AddDays(1));
@@ -47,6 +47,27 @@ namespace Ombi.Controllers
             if (images.ArtistThumbnails != null && images.ArtistThumbnails.Length > 0)
             {
                 var image = images.ArtistThumbnails.OrderByDescending(x => x.likes).Select(x => x.url).FirstOrDefault();
+                return image == null ? string.Empty : image;
+            }
+
+            return string.Empty;
+        }
+
+        [HttpGet("background/artist/{mbid}")]
+        public async Task<string> GetArtistBackground(string mbid)
+        {
+            var key = await _cache.GetOrAdd(CacheKeys.FanartTv, async () => await Config.Get(Store.Entities.ConfigurationTypes.FanartTv), DateTime.Now.AddDays(1));
+
+            var images = await FanartTvApi.GetArtistImages(mbid, key.Value);
+
+            if (images == null)
+            {
+                return string.Empty;
+            }
+
+            if (images.ArtistBackgrounds != null && images.ArtistBackgrounds.Length > 0)
+            {
+                var image = images.ArtistBackgrounds.OrderByDescending(x => x.likes).Select(x => x.url).FirstOrDefault();
                 return image == null ? string.Empty : image;
             }
 

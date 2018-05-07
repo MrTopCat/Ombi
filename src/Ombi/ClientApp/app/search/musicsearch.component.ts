@@ -6,6 +6,7 @@ import { SearchService, ImageService } from "../services";
 import { IRequestEngineResult } from "../interfaces";
 import { IIssueCategory, } from "../interfaces";
 import { ISearchMusicResult } from "../interfaces/ISearchMusicResult";
+import { DomSanitizer } from "@angular/platform-browser";
 
 @Component({
     selector: "music-search",
@@ -28,7 +29,7 @@ export class MusicSearchComponent implements OnInit {
     public issueProviderId: string;
     public issueCategorySelected: IIssueCategory;
 
-    constructor(private searchService: SearchService, private imageService: ImageService) {
+    constructor(private searchService: SearchService, private imageService: ImageService, private sanitizer: DomSanitizer) {
 
         this.searchChanged
             .debounceTime(600) // Wait Xms after the last event before emitting last event
@@ -86,8 +87,17 @@ export class MusicSearchComponent implements OnInit {
     public getExtraInfo() {
         this.musicResults.forEach((val, index) => {
             if (val.image === null){
+                val.image = "../../../images/default_music_poster.png";
                 this.imageService.getArtistPoster(val.artistID).subscribe(x => {
-                    val.image = x;
+                    if (x){
+                        val.image = x;
+                    }
+                });
+            }
+
+            if (val.backgroundImage === null){
+                this.imageService.getArtistBanner(val.artistID).subscribe(x => {
+                    val.backgroundImage = this.sanitizer.bypassSecurityTrustStyle("url(" + x + ")");
                 });
             }
         });

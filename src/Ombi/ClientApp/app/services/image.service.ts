@@ -18,7 +18,11 @@ export class ImageService extends ServiceHelpers {
     }
 
     public getArtistPoster(musicBrainzId: string): Observable<string> {
-        return this.http.get<string>(`${this.url}artist/${musicBrainzId}`, {headers: this.headers});
+        return this.http.get<string>(`${this.url}poster/artist/${musicBrainzId}`, {headers: this.headers});
+    }
+
+    public getArtistBanner(musicBrainzId: string): Observable<string> {
+        return this.http.get<string>(`${this.url}background/artist/${musicBrainzId}`, {headers: this.headers});
     }
 
     public getTvBanner(tvdbid: number): Observable<string> {
