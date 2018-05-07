@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Ombi.Core.Engine.Interfaces;
@@ -21,20 +22,24 @@ public class MusicSearchEngine : IMusicSearchEngine
     {
         var results = await MusicBrainzApi.SearchArtists(searchTerm);
 
-        return await Transform(results, true);
+        var matching = Array.FindAll(results.Artists, x => x.Score >= 90)
+            .OrderByDescending(x => x.Score)
+            .Take(10) // each item will require an api call, limit to 10
+            .ToArray(); 
+
+        return await Transform(matching, true);
     }
 
     public async Task<SearchMusicViewModel> GetArtistAlbums(string artistID)
     {
-        return Mapper.Map<SearchMusicViewModel>(await MusicBrainzApi.GetAlbumInformation(artistID));
+        return Mapper.Map<SearchMusicViewModel>(await MusicBrainzApi.AlbumsForArtist(artistID));
     }
 
-    private async Task<IEnumerable<SearchMusicViewModel>> Transform(ArtistSearchResultsDto artistResults, bool includeAlbums = false)
+    private async Task<IEnumerable<SearchMusicViewModel>> Transform(ArtistEntityDto[] artists, bool includeAlbums = false)
     {
         List<SearchMusicViewModel> results = new List<SearchMusicViewModel>();
-        var matching = Array.FindAll(artistResults.Artists, x => x.Score >= 90);
 
-        Array.ForEach(matching, artist => results.Add(Mapper.Map<SearchMusicViewModel>(artist)));
+        Array.ForEach(artists, artist => results.Add(Mapper.Map<SearchMusicViewModel>(artist)));
 
         if (includeAlbums)
         {

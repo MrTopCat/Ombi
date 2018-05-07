@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Ombi.Api.FanartTv.Models;
 
@@ -8,6 +9,9 @@ public class ArtistResult
 
     [JsonProperty("name")]
     public string Name { get; set; }
+
+    [JsonProperty("albums")]
+    public IDictionary<string, AlbumResult> Albums { get; set; }
 
     [JsonProperty("hdmusiclogo")]
     public Content[] HighDefenitionMusicLogos { get; set; }
