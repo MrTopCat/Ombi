@@ -55,14 +55,18 @@ namespace Ombi.Controllers
 
             if (images.Albums.Values.Count > 0)
             {
-                foreach (var kvp in images.Albums)
+                var albums = new List<AlbumViewModel>();
+
+                foreach (var kvp in images.Albums.Where(x => x.Value.AlbumCovers != null))
                 {
-                    viewModel.Albums.Append(new AlbumViewModel()
+                    albums.Add(new AlbumViewModel()
                     {
                         AlbumID = kvp.Key,
                         AlbumArt = kvp.Value.AlbumCovers.OrderByDescending(x => x.Likes).Select(x => x.Url).FirstOrDefault(),
                     });
                 }
+
+                viewModel.Albums = albums.ToArray();
             }
 
             return viewModel;
