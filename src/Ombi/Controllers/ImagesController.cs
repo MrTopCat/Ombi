@@ -53,6 +53,11 @@ namespace Ombi.Controllers
                 viewModel.Image = images.ArtistThumbnails.OrderByDescending(x => x.likes).Select(x => x.url).FirstOrDefault();
             }
 
+            if (images.ArtistBackgrounds != null && images.ArtistBackgrounds.Length > 0)
+            {
+                viewModel.BackgroundImage = images.ArtistBackgrounds.OrderByDescending(x => x.likes).Select(x => x.url).FirstOrDefault();
+            }
+
             if (images.Albums.Values.Count > 0)
             {
                 var albums = new List<AlbumViewModel>();

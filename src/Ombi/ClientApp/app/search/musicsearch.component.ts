@@ -92,7 +92,7 @@ export class MusicSearchComponent implements OnInit {
                 this.imageService.getArtistImages(val.artistID).subscribe(x => {
                     if (x) {
                         val.image = x.image;
-                        val.backgroundImage = x.backgroundImage;
+                        val.backgroundImage = this.sanitizer.bypassSecurityTrustStyle(x.backgroundImage);
                     }
                 });
             }
