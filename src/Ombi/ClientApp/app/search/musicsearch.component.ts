@@ -86,18 +86,14 @@ export class MusicSearchComponent implements OnInit {
 
     public getExtraInfo() {
         this.musicResults.forEach((val, index) => {
-            if (val.image === null){
-                val.image = "../../../images/default_music_poster.png";
-                this.imageService.getArtistPoster(val.artistID).subscribe(x => {
-                    if (x){
-                        val.image = x;
-                    }
-                });
-            }
 
-            if (val.backgroundImage === null){
-                this.imageService.getArtistBanner(val.artistID).subscribe(x => {
-                    val.backgroundImage = this.sanitizer.bypassSecurityTrustStyle("url(" + x + ")");
+            if (val.image === null) {
+                val.image = "../../../images/default_music_poster.png";
+                this.imageService.getArtistImages(val.artistID).subscribe(x => {
+                    if (x) {
+                        val.image = x.image;
+                        val.backgroundImage = x.backgroundImage;
+                    }
                 });
             }
         });

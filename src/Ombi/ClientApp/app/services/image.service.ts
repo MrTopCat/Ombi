@@ -6,6 +6,7 @@ import { HttpClient } from "@angular/common/http";
 
 import { IImages } from "../interfaces";
 import { ServiceHelpers } from "./service.helpers";
+import { ISearchMusicResult } from "../interfaces/ISearchMusicResult"
 
 @Injectable()
 export class ImageService extends ServiceHelpers {
@@ -15,6 +16,10 @@ export class ImageService extends ServiceHelpers {
 
     public getRandomBackground(): Observable<IImages> {
         return this.http.get<IImages>(`${this.url}background/`, {headers: this.headers});
+    }
+
+    public getArtistImages(musicBrainzId: string): Observable<ISearchMusicResult> {
+        return this.http.get<ISearchMusicResult>(`${this.url}images/artist/${musicBrainzId}`, { headers: this.headers });
     }
 
     public getArtistPoster(musicBrainzId: string): Observable<string> {
