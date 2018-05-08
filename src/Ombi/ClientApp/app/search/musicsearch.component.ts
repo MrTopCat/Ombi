@@ -11,7 +11,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 @Component({
     selector: "music-search",
     templateUrl: "./musicsearch.component.html",
-    styleUrls: ["./../requests/tvrequests.component.scss"],
+    styleUrls: ["./musicsearch.component.scss"],
 })
 export class MusicSearchComponent implements OnInit {
 
@@ -28,6 +28,7 @@ export class MusicSearchComponent implements OnInit {
     public issueRequestId: number;
     public issueProviderId: string;
     public issueCategorySelected: IIssueCategory;
+    public static defaultImage = "../../../images/default_music_poster.png";
 
     constructor(private searchService: SearchService, private imageService: ImageService, private sanitizer: DomSanitizer) {
 
@@ -84,15 +85,32 @@ export class MusicSearchComponent implements OnInit {
         };
     }
 
+    public frontAlbums (result: ISearchMusicResult) {
+        return result.albums.filter(x => x.albumArt != MusicSearchComponent.defaultImage);
+    }
+
     public getExtraInfo() {
         this.musicResults.forEach((val, index) => {
 
             if (val.image === null) {
-                val.image = "../../../images/default_music_poster.png";
-                this.imageService.getArtistImages(val.artistID).subscribe(x => {
-                    if (x) {
-                        val.image = x.image;
-                        val.backgroundImage = this.sanitizer.bypassSecurityTrustStyle(x.backgroundImage);
+                val.image = MusicSearchComponent.defaultImage;
+
+                val.albums.forEach(album => {
+                    album.albumArt = MusicSearchComponent.defaultImage;
+                });
+
+                this.imageService.getArtistImages(val.artistID).subscribe(response => {
+                    if (response) {
+                        val.image = response.image;
+                        val.backgroundImage = this.sanitizer.bypassSecurityTrustStyle("url(" + response.backgroundImage + ")");
+
+                        response.albums.forEach(album => {
+                            var albumResult = val.albums.find(x => x.albumID === album.albumID);
+
+                            if (albumResult){
+                                albumResult.albumArt = album.albumArt;
+                            }
+                        });
                     }
                 });
             }

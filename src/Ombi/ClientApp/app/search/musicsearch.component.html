@@ -11,7 +11,7 @@
                     <i class="fa fa-chevron-down"></i>
                 </a>
                 <ul class="dropdown-menu">
-                    
+
                 </ul>
             </div>
             <i class="fa fa-search"></i>
@@ -37,21 +37,27 @@
                 <img *ngIf="result.image" class="img-responsive poster" src="{{result.image}}" alt="poster">
 
             </div>
-            <div class="col-sm-8 small-padding">
+            <div class="col-sm-10 small-padding">
                 <div>
                     <a href="https://musicbrainz.org/artist/{{result.artistID}}" target="_blank">
                         <h4 *ngIf="!result.disambiguation">{{result.name}}</h4>
                         <h4 *ngIf="result.disambiguation">{{result.name}} ({{result.disambiguation}})</h4>
                     </a>
-                    <br/>
+                    <div class="album-summary">
+                        <div class="album-summary-container" *ngFor="let album of frontAlbums(result)">
+                            <img *ngIf="album.albumArt" src="{{album.albumArt}}">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <br/>
-        <br/>
+
     </div>
 
+    <br/>
+    <br/>
 </div>
+
 
 
 <issue-report [movie]="true" [visible]="issuesBarVisible" (visibleChange)="issuesBarVisible = $event;" [title]="issueRequestTitle"
