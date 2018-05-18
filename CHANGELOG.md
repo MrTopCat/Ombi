@@ -1,5 +1,57 @@
 # Changelog
 
+## v3.0.3330 (2018-05-17)
+
+### **New Features**
+
+- Added the test button for mobile notifications. [Jamie Rees]
+
+- Added classes to donation html elements. [Anojh]
+
+### **Fixes**
+
+- !changelog. [Jamie Rees]
+
+- Fixed #2257. [Jamie Rees]
+
+- Improved the way we sync the plex content and then get the metadata. #2243. [Jamie Rees]
+
+- Fixed the issue when enabling the Hide Request Users included system users e.g. API key user #2232. [Jamie Rees]
+
+- Removed the test button from the mobile screen since it did nada. [Jamie Rees]
+
+- Finished adding subscriptions for TV Shows. [Jamie Rees]
+
+- Fix #2167. [Anojh]
+
+- Fix #2228. [Anojh]
+
+- Enhanced newsletter styling to support more mail clients. [Anojh]
+
+- Fix #2246. [Anojh]
+
+- Fix #2234. [Anojh]
+
+- Fixed that sometimes there would be a hidden error on the login page. [Jamie Rees]
+
+
+## v3.0.3304 (2018-05-09)
+
+### **New Features**
+
+- Updated to prevent security vulnerability as noted here: https://github.com/aspnet/Announcements/issues/300. [Jamie Rees]
+
+- Update README.md. [Jamie]
+
+### **Fixes**
+
+- [LC] - Added classes to root/quality override divs. [Anojh]
+
+- Fixed an issue where sometimes the OAuth wouldn't work when loading the login page. [Jamie Rees]
+
+- Alwats enable mobile link. [Jamie]
+
+
 ## v3.0.3293 (2018-05-05)
 
 ### **New Features**
