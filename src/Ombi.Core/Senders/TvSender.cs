@@ -118,17 +118,31 @@ namespace Ombi.Core.Senders
                 return null;
             }
 
-            int.TryParse(s.QualityProfile, out var qualityToUse);
+            int qualityToUse;
+            string rootFolderPath;
+
+            if (model.SeriesType == SeriesType.Anime)
+            {
+                // Get the root path from the rootfolder selected.
+                // For some reason, if we haven't got one use the first root folder in Sonarr
+                // TODO make this overrideable via the UI
+                rootFolderPath = await GetSonarrRootPath(model.ParentRequest.RootFolder ?? int.Parse(s.RootPathAnime), s);
+                int.TryParse(s.QualityProfileAnime, out qualityToUse);
+            }
+            else
+            {
+                int.TryParse(s.QualityProfile, out qualityToUse);
+                // Get the root path from the rootfolder selected.
+                // For some reason, if we haven't got one use the first root folder in Sonarr
+                // TODO make this overrideable via the UI
+                rootFolderPath = await GetSonarrRootPath(model.ParentRequest.RootFolder ?? int.Parse(s.RootPath), s);
+            }
 
             if (model.ParentRequest.QualityOverride.HasValue)
             {
                 qualityToUse = model.ParentRequest.QualityOverride.Value;
             }
-
-            // Get the root path from the rootfolder selected.
-            // For some reason, if we haven't got one use the first root folder in Sonarr
-            // TODO make this overrideable via the UI
-            var rootFolderPath = await GetSonarrRootPath(model.ParentRequest.RootFolder ?? int.Parse(s.RootPath), s);
+            
             try
             {
                 // Does the series actually exist?
@@ -160,13 +174,13 @@ namespace Ombi.Core.Senders
                     // Montitor the correct seasons,
                     // If we have that season in the model then it's monitored!
                     var seasonsToAdd = new List<Season>();
-                    for (var i = 1; i < model.ParentRequest.TotalSeasons + 1; i++)
+                    for (var i = 0; i < model.ParentRequest.TotalSeasons + 1; i++)
                     {
                         var index = i;
                         var season = new Season
                         {
                             seasonNumber = i,
-                            monitored = model.SeasonRequests.Any(x => x.SeasonNumber == index)
+                            monitored = model.SeasonRequests.Any(x => x.SeasonNumber == index && x.SeasonNumber != 0)
                         };
                         seasonsToAdd.Add(season);
                     }
@@ -241,7 +255,12 @@ namespace Ombi.Core.Senders
                 {
                     // We have the same amount of requests as all of the episodes in the season.
                     var existingSeason =
-                        result.seasons.First(x => x.seasonNumber == season.SeasonNumber);
+                        result.seasons.FirstOrDefault(x => x.seasonNumber == season.SeasonNumber);
+                    if (existingSeason == null)
+                    {
+                        Logger.LogError("The sonarr ep count was the same as out request count, but could not match the season number {0}", season.SeasonNumber);
+                        continue;
+                    }
                     existingSeason.monitored = true;
                     seriesChanges = true;
                 }
@@ -300,9 +319,17 @@ namespace Ombi.Core.Senders
             foreach (var seasonRequests in model.SeasonRequests)
             {
                 var srEpisodes = await SickRageApi.GetEpisodesForSeason(tvdbid, seasonRequests.SeasonNumber, settings.ApiKey, settings.FullUri);
-                while (srEpisodes.message.Equals("Show not found", StringComparison.CurrentCultureIgnoreCase) && srEpisodes.data.Count <= 0)
+                int retryTimes = 10;
+                var currentRetry = 0;
+                while (srEpisodes.message.Equals("Show not found", StringComparison.CurrentCultureIgnoreCase) || srEpisodes.message.Equals("Season not found", StringComparison.CurrentCultureIgnoreCase) && srEpisodes.data.Count <= 0)
                 {
+                    if (currentRetry > retryTimes)
+                    {
+                        Logger.LogWarning("Couldnt find the SR Season or Show, message: {0}", srEpisodes.message);
+                        break;
+                    }
                     await Task.Delay(TimeSpan.FromSeconds(1));
+                    currentRetry++;
                     srEpisodes = await SickRageApi.GetEpisodesForSeason(tvdbid, seasonRequests.SeasonNumber, settings.ApiKey, settings.FullUri);
                 }
 

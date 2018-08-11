@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Ombi.Core.Authentication;
 using Ombi.Core.Engine.Interfaces;
 using Ombi.Core.Helpers;
+using Ombi.Core.Models.UI;
 using Ombi.Core.Rule;
 using Ombi.Core.Rule.Interfaces;
 using Ombi.Core.Senders;
@@ -132,7 +133,7 @@ namespace Ombi.Core.Engine
             return await AddRequest(newRequest.NewRequest);
         }
 
-        public async Task<IEnumerable<TvRequests>> GetRequests(int count, int position)
+        public async Task<RequestsViewModel<TvRequests>> GetRequests(int count, int position, OrderFilterModel type)
         {
             var shouldHide = await HideFromOtherUsers();
             List<TvRequests> allRequests;
@@ -142,7 +143,8 @@ namespace Ombi.Core.Engine
                     .Include(x => x.ChildRequests)
                     .ThenInclude(x => x.SeasonRequests)
                     .ThenInclude(x => x.Episodes)
-                    .Skip(position).Take(count).OrderByDescending(x => x.ReleaseDate).ToListAsync();
+                    .OrderByDescending(x => x.ChildRequests.Max(y => y.RequestedDate))
+                    .Skip(position).Take(count).ToListAsync();
 
                 // Filter out children
 
@@ -154,12 +156,45 @@ namespace Ombi.Core.Engine
                     .Include(x => x.ChildRequests)
                     .ThenInclude(x => x.SeasonRequests)
                     .ThenInclude(x => x.Episodes)
-                    .Skip(position).Take(count).OrderByDescending(x => x.ReleaseDate).ToListAsync();
+                    .OrderByDescending(x => x.ChildRequests.Max(y => y.RequestedDate))
+                    .Skip(position).Take(count).ToListAsync();
             }
 
             allRequests.ForEach(async r => { await CheckForSubscription(shouldHide, r); });
 
-            return allRequests;
+            return new RequestsViewModel<TvRequests>
+            {
+                Collection = allRequests
+            };
+        }
+
+        public async Task<RequestsViewModel<TvRequests>> GetRequestsLite(int count, int position, OrderFilterModel type)
+        {
+            var shouldHide = await HideFromOtherUsers();
+            List<TvRequests> allRequests;
+            if (shouldHide.Hide)
+            {
+                allRequests = await TvRepository.GetLite(shouldHide.UserId)
+                    .OrderByDescending(x => x.ChildRequests.Max(y => y.RequestedDate))
+                    .Skip(position).Take(count).ToListAsync();
+
+                // Filter out children
+
+                FilterChildren(allRequests, shouldHide);
+            }
+            else
+            {
+                allRequests = await TvRepository.GetLite()
+                    .OrderByDescending(x => x.ChildRequests.Max(y => y.RequestedDate))
+                    .Skip(position).Take(count).ToListAsync();
+            }
+
+            allRequests.ForEach(async r => { await CheckForSubscription(shouldHide, r); });
+
+            return new RequestsViewModel<TvRequests>
+            {
+                Collection = allRequests
+            };
         }
 
         public async Task<IEnumerable<TreeNode<TvRequests, List<ChildRequests>>>> GetRequestsTreeNode(int count, int position)
@@ -172,6 +207,8 @@ namespace Ombi.Core.Engine
                     .Include(x => x.ChildRequests)
                     .ThenInclude(x => x.SeasonRequests)
                     .ThenInclude(x => x.Episodes)
+                    .Where(x => x.ChildRequests.Any())
+                    .OrderByDescending(x => x.ChildRequests.Max(y => y.RequestedDate))
                     .Skip(position).Take(count).ToListAsync();
 
                 FilterChildren(allRequests, shouldHide);
@@ -182,6 +219,8 @@ namespace Ombi.Core.Engine
                     .Include(x => x.ChildRequests)
                     .ThenInclude(x => x.SeasonRequests)
                     .ThenInclude(x => x.Episodes)
+                    .Where(x => x.ChildRequests.Any())
+                    .OrderByDescending(x => x.ChildRequests.Max(y => y.RequestedDate))
                     .Skip(position).Take(count).ToListAsync();
             }
 
@@ -208,6 +247,45 @@ namespace Ombi.Core.Engine
             return allRequests;
         }
 
+
+        public async Task<IEnumerable<TvRequests>> GetRequestsLite()
+        {
+            var shouldHide = await HideFromOtherUsers();
+            List<TvRequests> allRequests;
+            if (shouldHide.Hide)
+            {
+                allRequests = await TvRepository.GetLite(shouldHide.UserId).ToListAsync();
+
+                FilterChildren(allRequests, shouldHide);
+            }
+            else
+            {
+                allRequests = await TvRepository.GetLite().ToListAsync();
+            }
+
+            allRequests.ForEach(async r => { await CheckForSubscription(shouldHide, r); });
+            return allRequests;
+        }
+
+        public async Task<TvRequests> GetTvRequest(int requestId)
+        {
+            var shouldHide = await HideFromOtherUsers();
+            TvRequests request;
+            if (shouldHide.Hide)
+            {
+                request = await TvRepository.Get(shouldHide.UserId).Where(x => x.Id == requestId).FirstOrDefaultAsync();
+
+                FilterChildren(request, shouldHide);
+            }
+            else
+            {
+                request = await TvRepository.Get().Where(x => x.Id == requestId).FirstOrDefaultAsync();
+            }
+
+            await CheckForSubscription(shouldHide, request);
+            return request;
+        }
+
         private static void FilterChildren(IEnumerable<TvRequests> allRequests, HideResult shouldHide)
         {
             // Filter out children
@@ -215,14 +293,25 @@ namespace Ombi.Core.Engine
             {
                 for (var j = 0; j < t.ChildRequests.Count; j++)
                 {
-                    var child = t.ChildRequests[j];
-                    if (child.RequestedUserId != shouldHide.UserId)
-                    {
-                        t.ChildRequests.RemoveAt(j);
-                        j--;
-                    }
+                    FilterChildren(t, shouldHide);
                 }
             }
+        }
+
+        private static void FilterChildren(TvRequests t, HideResult shouldHide)
+        {
+            // Filter out children
+
+            for (var j = 0; j < t.ChildRequests.Count; j++)
+            {
+                var child = t.ChildRequests[j];
+                if (child.RequestedUserId != shouldHide.UserId)
+                {
+                    t.ChildRequests.RemoveAt(j);
+                    j--;
+                }
+            }
+
         }
 
         public async Task<IEnumerable<ChildRequests>> GetAllChldren(int tvId)
@@ -460,7 +549,7 @@ namespace Ombi.Core.Engine
         {
             foreach (var tv in x.ChildRequests)
             {
-               await CheckForSubscription(shouldHide, tv);
+                await CheckForSubscription(shouldHide, tv);
             }
         }
 

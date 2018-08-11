@@ -80,12 +80,10 @@ namespace Ombi.Controllers
             {
                 // Plex OAuth
                 // Redirect them to Plex
-                // We need a PIN first
-                var pin = await _plexOAuthManager.RequestPin();
-
+                
                 var websiteAddress = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
                 //https://app.plex.tv/auth#?forwardUrl=http://google.com/&clientID=Ombi-Test&context%5Bdevice%5D%5Bproduct%5D=Ombi%20SSO&pinID=798798&code=4lgfd
-                var url = await _plexOAuthManager.GetOAuthUrl(pin.id, pin.code, websiteAddress);
+                var url = await _plexOAuthManager.GetOAuthUrl(model.PlexTvPin.id, model.PlexTvPin.code, websiteAddress);
                 if (url == null)
                 {
                     return new JsonResult(new
@@ -126,7 +124,7 @@ namespace Ombi.Controllers
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: rememberMe ? DateTime.UtcNow.AddDays(7) : DateTime.UtcNow.AddHours(5),
+                expires: rememberMe ? DateTime.Now.AddDays(7) : DateTime.Now.AddDays(1),
                 signingCredentials: creds,
                 audience: "Ombi", issuer: "Ombi"
             );

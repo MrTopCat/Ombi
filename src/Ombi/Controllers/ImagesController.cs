@@ -122,6 +122,10 @@ namespace Ombi.Controllers
         [HttpGet("tv/{tvdbid}")]
         public async Task<string> GetTvBanner(int tvdbid)
         {
+            if (tvdbid <= 0)
+            {
+                return string.Empty;
+            }
             var key = await _cache.GetOrAdd(CacheKeys.FanartTv, async () => await Config.Get(Store.Entities.ConfigurationTypes.FanartTv), DateTime.Now.AddDays(1));
 
             var images = await FanartTvApi.GetTvImages(tvdbid, key.Value);
@@ -177,6 +181,10 @@ namespace Ombi.Controllers
         [HttpGet("poster/tv/{tvdbid}")]
         public async Task<string> GetTvPoster(int tvdbid)
         {
+            if (tvdbid <= 0)
+            {
+                return string.Empty;
+            }
             var key = await _cache.GetOrAdd(CacheKeys.FanartTv, async () => await Config.Get(Store.Entities.ConfigurationTypes.FanartTv), DateTime.Now.AddDays(1));
 
             var images = await FanartTvApi.GetTvImages(tvdbid, key.Value);
@@ -232,6 +240,10 @@ namespace Ombi.Controllers
         [HttpGet("background/tv/{tvdbid}")]
         public async Task<string> GetTvBackground(int tvdbid)
         {
+            if (tvdbid <= 0)
+            {
+                return string.Empty;
+            }
             var key = await _cache.GetOrAdd(CacheKeys.FanartTv, async () => await Config.Get(Store.Entities.ConfigurationTypes.FanartTv), DateTime.Now.AddDays(1));
 
             var images = await FanartTvApi.GetTvImages(tvdbid, key.Value);
@@ -276,7 +288,10 @@ namespace Ombi.Controllers
                     result = await FanartTvApi.GetMovieImages(moviesArray[item].ToString(), key.Value);
                 }
 
-                movieUrl = result.moviebackground[0].url;
+                var otherRand = new Random();
+                var res = otherRand.Next(result.moviebackground.Length);
+                
+                movieUrl = result.moviebackground[res].url;
             }
             if (tvArray.Any())
             {
@@ -287,8 +302,10 @@ namespace Ombi.Controllers
                 {
                     result = await FanartTvApi.GetTvImages(tvArray[item], key.Value);
                 }
+                var otherRand = new Random();
+                var res = otherRand.Next(result.showbackground.Length);
 
-                tvUrl = result.showbackground[0].url;
+                tvUrl = result.showbackground[res].url;
             }
 
             if (!string.IsNullOrEmpty(movieUrl) && !string.IsNullOrEmpty(tvUrl))

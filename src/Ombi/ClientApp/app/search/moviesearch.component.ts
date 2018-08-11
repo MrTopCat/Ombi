@@ -70,6 +70,7 @@ export class MovieSearchComponent implements OnInit {
             result: false,
             errorMessage: "",
         };      
+        this.popularMovies();
     }
 
     public search(text: any) {
@@ -79,6 +80,7 @@ export class MovieSearchComponent implements OnInit {
     public request(searchResult: ISearchMovieResult) {
         searchResult.requested = true;
         searchResult.requestProcessing = true;
+        searchResult.showSubscribe = false;
         if (this.authService.hasRole("admin") || this.authService.hasRole("AutoApproveMovie")) {
             searchResult.approved = true;
         }
@@ -103,6 +105,7 @@ export class MovieSearchComponent implements OnInit {
                         searchResult.approved = false;
                         searchResult.processed = false;
                         searchResult.requestProcessing = false;
+                        
                     }
                 });
         } catch (e) {
@@ -161,6 +164,22 @@ export class MovieSearchComponent implements OnInit {
             this.movieResults = x;
             this.getExtraInfo();
         });
+    }
+        
+    public subscribe(r: ISearchMovieResult) {
+        r.subscribed = true;
+        this.requestService.subscribeToMovie(r.requestId)
+            .subscribe(x => {
+                this.notificationService.success("Subscribed To Movie!");
+            });
+    }
+
+    public unSubscribe(r: ISearchMovieResult) {
+        r.subscribed = false;
+        this.requestService.unSubscribeToMovie(r.requestId)
+            .subscribe(x => {
+                this.notificationService.success("Unsubscribed Movie!");
+            });
     }
 
    private getExtraInfo() {

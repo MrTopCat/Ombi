@@ -947,7 +947,7 @@ namespace Ombi.Store.Migrations
 
             modelBuilder.Entity("Ombi.Store.Entities.RequestSubscription", b =>
                 {
-                    b.HasOne("Ombi.Store.Entities.OmbiUser", "user")
+                    b.HasOne("Ombi.Store.Entities.OmbiUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
                 });

@@ -1,5 +1,207 @@
 # Changelog
 
+## v3.0.3477 (2018-07-18)
+
+### **New Features**
+
+- Updated the Emby availability checker to bring it more in line with what we do with Plex. [TidusJar]
+
+- Added the ability to impersonate a user when using the API Key. This allows people to use the API and request as a certain user. #2363. [Jamie Rees]
+
+- Added more background images and it will loop through the available ones. [Jamie Rees]
+
+- Added chunk hashing to resolve #2330. [Jamie Rees]
+
+- Added API at /api/v1/status/info to get branch and version information #2331. [Jamie Rees]
+
+- Update to .net 2.1.1. [Jamie]
+
+### **Fixes**
+
+- Fix #2322 caused by continue statement inside try catch block. [Anojh]
+
+- Fixed #2367. [TidusJar]
+
+- Fixed the issue where you could not delete a user #2365. [TidusJar]
+
+- Another attempt to fix #2366. [Jamie Rees]
+
+- Fixed the Plex OAuth warning. [Jamie]
+
+- Revert "Fixed Plex OAuth, should no longer show Insecure warning" [Jamie Rees]
+
+- Fixed Plex OAuth, should no longer show Insecure warning. [Jamie Rees]
+
+- Fixed the View On Emby URL since the Link changed #2368. [Jamie Rees]
+
+- Fixed the issue where episodes were not being marked as available in the search #2367. [Jamie Rees]
+
+- Fixed #2371. [Jamie Rees]
+
+- Fixed collection issues in Emby #2366. [Jamie Rees]
+
+- Do not delete the Emby Information every time we run, let's keep the content now. [Jamie Rees]
+
+- Emby Improvements: Batch up the amount we get from the server. [Jamie Rees]
+
+- Log errors when they are uncaught. [Jamie Rees]
+
+- Fix unclosed table tags causing overflow #2322. [Anojh]
+
+- This should now fix #2350. [Jamie]
+
+- Improve the validation around the Application URL. [Jamie Rees]
+
+- Fixed #2341. [Jamie Rees]
+
+- Stop spamming errors when FanArt doesn't have the image. [Jamie Rees]
+
+- Fixed #2338. [Jamie Rees]
+
+- Removed some logging statements. [Jamie Rees]
+
+- Fixed the api key being case sensative #2350. [Jamie Rees]
+
+- Improved the Emby API #2230 Thanks Luke! [Jamie Rees]
+
+- Revert. [Jamie Rees]
+
+- Fixed a small error in the Mobile Notification Provider. [Jamie Rees]
+
+- Minor style tweaks. [Randall Bruder]
+
+- Downgrade to .net core 2.0. [Jamie Rees]
+
+- Downgrade Microsoft.AspNetCore.All package back to 2.0.8. [Jamie Rees]
+
+- Removed old code. [Jamie Rees]
+
+- Swap out the old way of validating the API key with a real middlewear this time. [Jamie Rees]
+
+
+## v3.0.3421 (2018-06-23)
+
+### **New Features**
+
+- Added TVRequestsLite. [Jamie]
+
+- Added a smaller and simplier way of getting TV Request info. [Jamie Rees]
+
+### **Fixes**
+
+- Show the popular movies and tv shows by default. [Jamie]
+
+- Fixed #2348. [Jamie]
+
+
+## v3.0.3407 (2018-06-18)
+
+### **New Features**
+
+- Update appveyor.yml. [Jamie]
+
+- Update build.cake. [Jamie]
+
+### **Fixes**
+
+- Fixed the issue where when we find an episode for the recently added sync, we don't check if we should run the availbility checker. [Jamie]
+
+- Fixed the API not working due to a bug in .Net Core 2.1. [Jamie]
+
+- Fixed #2321. [Jamie]
+
+- Maybe this will fix #2298. [Jamie]
+
+- Fixed #2312. [Jamie]
+
+- Fixed the SickRage/Medusa Issue where it was always being set as Skipped/Ignore #2084. [Jamie]
+
+- Fixed the sorting and filtering on the Movie Requests page, it all functions correctly now. [Jamie]
+
+- Fixed #2288. [Jamie]
+
+- Upgrade packages. [Jamie]
+
+- Inital Migration. [Jamie]
+
+- Fixed #2317. [Jamie]
+
+
+## v3.0.3383 (2018-06-07)
+
+### **New Features**
+
+- Update CHANGELOG.md. [Jamie]
+
+### **Fixes**
+
+- Minor improvements. [Jamie]
+
+- Run the availability checker on finish of the recentlty added sync. [Jamie]
+
+- Fixed the issue with the Recently Added Sync sometimes not working as expected. [Jamie]
+
+- The UI looks at the local time to see if the JWT token has expired. Use local time to generate the token. [Jamie Rees]
+
+
+## v3.0.3368 (2018-06-03)
+
+### **New Features**
+
+- Added the subscribe on the sarch page. [Jamie Rees]
+
+- Added the subscribe button to the search page if we have an existing request. [Jamie Rees]
+
+- Update CHANGELOG.md. [Jamie]
+
+### **Fixes**
+
+- Use selected episodes in submitRequest. [Calvin]
+
+- Fixed where the test button wouldn't work on the mobile notifications page. [Jamie]
+
+- Fixed the sorting and filtering on the Movie Requests page, it all functions correctly now. [Jamie]
+
+- Fixed #2288. [Jamie]
+
+- Fixed the SickRage/Medusa Issue where it was always being set as Skipped/Ignore #2084. [Jamie]
+
+- Fixed UI typo refrencing discord in mattermost notifications #2175. [Anojh]
+
+- Fix #2175. [Anojh]
+
+- Fixed #2013. [Jamie Rees]
+
+- Fixed #2147. [Jamie Rees]
+
+
+## v3.0.3346 (2018-05-26)
+
+### **New Features**
+
+- Added a default set of root folders and qualities for Anime in Sonarr. [Jamie Rees]
+
+### **Fixes**
+
+- Made the Open on Mobile link less hidden. [Jamie Rees]
+
+- Fixed #2263. [Jamie Rees]
+
+- !changelog. [Jamie Rees]
+
+- Fixed #2243 The refresh metadata was being run everytime we launched Ombi... [Jamie]
+
+- Fixed a issue where the Plex Content Sync wouldn't pick up new shows #2276 #2244 #2261. [Jamie]
+
+- Sort TvRequests by latest request. [Joe Harvey]
+
+- Fixed build. [Jamie Rees]
+
+- Fix newsletter card background overflow when only one item is available. [Anojh]
+
+- Fix #1745. [Anojh]
+
+
 ## v3.0.3330 (2018-05-17)
 
 ### **New Features**

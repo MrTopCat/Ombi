@@ -11,7 +11,7 @@ import { SearchComponent } from "./search.component";
 import { SeriesInformationComponent } from "./seriesinformation.component";
 import { TvSearchComponent } from "./tvsearch.component";
 
-import { SidebarModule, TreeTableModule } from "primeng/primeng";
+import { SidebarModule, TooltipModule, TreeTableModule } from "primeng/primeng";
 
 import { RequestService } from "../services";
 import { SearchService } from "../services";
@@ -34,6 +34,7 @@ const routes: Routes = [
         TreeTableModule,
         SharedModule,
         SidebarModule,
+        TooltipModule,
     ],
     declarations: [
         SearchComponent,

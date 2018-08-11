@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Ombi.Core.Rule.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
 using Ombi.Core.Authentication;
@@ -59,7 +60,6 @@ namespace Ombi.Core.Engine
 
             if (result != null)
             {
-                Logger.LogDebug("Search Result: {result}", result);
                 return await TransformMovieResultsToResponse(result.Take(10)); // Take 10 to stop us overloading the API
             }
             return null;
@@ -90,7 +90,6 @@ namespace Ombi.Core.Engine
             var result = await Cache.GetOrAdd(CacheKeys.PopularMovies, async () => await MovieApi.PopularMovies(), DateTime.Now.AddHours(12));
             if (result != null)
             {
-                Logger.LogDebug("Search Result: {result}", result);
                 return await TransformMovieResultsToResponse(result.Take(10)); // Take 10 to stop us overloading the API
             }
             return null;
@@ -105,7 +104,6 @@ namespace Ombi.Core.Engine
             var result = await Cache.GetOrAdd(CacheKeys.TopRatedMovies, async () => await MovieApi.TopRated(), DateTime.Now.AddHours(12));
             if (result != null)
             {
-                Logger.LogDebug("Search Result: {result}", result);
                 return await TransformMovieResultsToResponse(result.Take(10)); // Take 10 to stop us overloading the API
             }
             return null;
@@ -135,7 +133,6 @@ namespace Ombi.Core.Engine
             var result = await Cache.GetOrAdd(CacheKeys.NowPlayingMovies, async () => await MovieApi.NowPlaying(), DateTime.Now.AddHours(12));
             if (result != null)
             {
-                Logger.LogDebug("Search Result: {result}", result);
                 return await TransformMovieResultsToResponse(result.Take(10)); // Take 10 to stop us overloading the API
             }
             return null;
@@ -166,10 +163,31 @@ namespace Ombi.Core.Engine
             viewMovie.TheMovieDbId = viewMovie.Id.ToString();
 
             await RunSearchRules(viewMovie);
-            
+
+            // This requires the rules to be run first to populate the RequestId property
+            await CheckForSubscription(viewMovie);
+
             return viewMovie;
         }
 
+        private async Task CheckForSubscription(SearchMovieViewModel viewModel)
+        {
+            // Check if this user requested it
+            var user = await GetUser();
+            var request = await RequestService.MovieRequestService.GetAll()
+                .AnyAsync(x => x.RequestedUserId.Equals(user.Id) && x.TheMovieDbId == viewModel.Id);
+            if (request)
+            {
+                viewModel.ShowSubscribe = false;
+            }
+            else
+            {
+                viewModel.ShowSubscribe = true;
+                var sub = await _subscriptionRepository.GetAll().FirstOrDefaultAsync(s => s.UserId == user.Id
+                                                                                          && s.RequestId == viewModel.RequestId && s.RequestType == RequestType.Movie);
+                viewModel.Subscribed = sub != null;
+            }
+        }
 
         private async Task<SearchMovieViewModel> ProcessSingleMovie(MovieSearchResult movie)
         {
