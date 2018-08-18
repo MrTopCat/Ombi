@@ -19,18 +19,16 @@ namespace Ombi.Controllers
     [Produces("application/json")]
     public class SearchController : Controller
     {
-        public SearchController(IMovieEngine movie, ITvSearchEngine tvEngine, IMusicSearchEngine musicEngine, ILogger<SearchController> logger)
+        public SearchController(IMovieEngine movie, ITvSearchEngine tvEngine, ILogger<SearchController> logger)
         {
             MovieEngine = movie;
             TvEngine = tvEngine;
             Logger = logger;
-            MusicEngine = musicEngine;
         }
         private ILogger<SearchController> Logger { get; }
 
         private IMovieEngine MovieEngine { get; }
         private ITvSearchEngine TvEngine { get; }
-        private IMusicSearchEngine MusicEngine { get; }
 
         /// <summary>
         /// Searches for a movie.
@@ -253,12 +251,6 @@ namespace Ombi.Controllers
         public async Task<IEnumerable<SearchTvShowViewModel>> Trending()
         {
             return await TvEngine.Trending();
-        }
-
-        [HttpGet("music/{searchTerm}")]
-        public async Task<IEnumerable<SearchMusicViewModel>> SearchMusic(string searchTerm)
-        {
-            return await MusicEngine.Search(searchTerm);
         }
     }
 }

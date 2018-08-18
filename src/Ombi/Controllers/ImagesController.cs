@@ -11,8 +11,6 @@ using Microsoft.Extensions.Options;
 using Ombi.Api.TheMovieDb;
 using Ombi.Config;
 using Ombi.Helpers;
-using CSharpx;
-using static SearchMusicViewModel;
 
 namespace Ombi.Controllers
 {
@@ -33,91 +31,6 @@ namespace Ombi.Controllers
         private IApplicationConfigRepository Config { get; }
         private LandingPageBackground Options { get; }
         private readonly ICacheService _cache;
-
-        [HttpGet("images/artist/{mbid}")]
-        public async Task<SearchMusicViewModel> GetArtistImages(string mbid)
-        {
-            var key = await _cache.GetOrAdd(CacheKeys.FanartTv, async () => await Config.Get(Store.Entities.ConfigurationTypes.FanartTv), DateTime.Now.AddDays(1));
-
-            var images = await FanartTvApi.GetArtistImages(mbid, key.Value);
-
-            var viewModel = new SearchMusicViewModel();
-
-            if (images == null)
-            {
-                return null;
-            }
-
-            if (images.ArtistThumbnails != null && images.ArtistThumbnails.Length > 0)
-            {
-                viewModel.Image = images.ArtistThumbnails.OrderByDescending(x => x.likes).Select(x => x.url).FirstOrDefault();
-            }
-
-            if (images.ArtistBackgrounds != null && images.ArtistBackgrounds.Length > 0)
-            {
-                viewModel.BackgroundImage = images.ArtistBackgrounds.OrderByDescending(x => x.likes).Select(x => x.url).FirstOrDefault();
-            }
-
-            if (images.Albums.Values.Count > 0)
-            {
-                var albums = new List<AlbumViewModel>();
-
-                foreach (var kvp in images.Albums.Where(x => x.Value.AlbumCovers != null))
-                {
-                    albums.Add(new AlbumViewModel()
-                    {
-                        AlbumID = kvp.Key,
-                        AlbumArt = kvp.Value.AlbumCovers.OrderByDescending(x => x.Likes).Select(x => x.Url).FirstOrDefault(),
-                    });
-                }
-
-                viewModel.Albums = albums.ToArray();
-            }
-
-            return viewModel;
-        }
-
-        [HttpGet("poster/artist/{mbid}")]
-        public async Task<string> GetArtistPoster(string mbid)
-        {
-            var key = await _cache.GetOrAdd(CacheKeys.FanartTv, async () => await Config.Get(Store.Entities.ConfigurationTypes.FanartTv), DateTime.Now.AddDays(1));
-
-            var images = await FanartTvApi.GetArtistImages(mbid, key.Value);
-
-            if (images == null)
-            {
-                return string.Empty;
-            }
-
-            if (images.ArtistThumbnails != null && images.ArtistThumbnails.Length > 0)
-            {
-                var image = images.ArtistThumbnails.OrderByDescending(x => x.likes).Select(x => x.url).FirstOrDefault();
-                return image == null ? string.Empty : image;
-            }
-
-            return string.Empty;
-        }
-
-        [HttpGet("background/artist/{mbid}")]
-        public async Task<string> GetArtistBackground(string mbid)
-        {
-            var key = await _cache.GetOrAdd(CacheKeys.FanartTv, async () => await Config.Get(Store.Entities.ConfigurationTypes.FanartTv), DateTime.Now.AddDays(1));
-
-            var images = await FanartTvApi.GetArtistImages(mbid, key.Value);
-
-            if (images == null)
-            {
-                return string.Empty;
-            }
-
-            if (images.ArtistBackgrounds != null && images.ArtistBackgrounds.Length > 0)
-            {
-                var image = images.ArtistBackgrounds.OrderByDescending(x => x.likes).Select(x => x.url).FirstOrDefault();
-                return image == null ? string.Empty : image;
-            }
-
-            return string.Empty;
-        }
 
         [HttpGet("tv/{tvdbid}")]
         public async Task<string> GetTvBanner(int tvdbid)

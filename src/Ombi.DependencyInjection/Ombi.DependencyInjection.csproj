@@ -38,7 +38,6 @@
     <ProjectReference Include="..\Ombi.Notifications\Ombi.Notifications.csproj" />
     <ProjectReference Include="..\Ombi.Schedule\Ombi.Schedule.csproj" />
     <ProjectReference Include="..\Ombi.Settings\Ombi.Settings.csproj" />
-    <ProjectReference Include="..\Ombi.MusicBrainz\Ombi.MusicBrainz.csproj" />
   </ItemGroup>
 
 </Project>

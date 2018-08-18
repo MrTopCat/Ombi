@@ -56,7 +56,6 @@ using Ombi.Core.Processor;
 using Ombi.Schedule.Jobs.Plex.Interfaces;
 using Ombi.Schedule.Jobs.SickRage;
 using Ombi.Schedule.Processor;
-using Ombi.MusicBrainz;
 
 namespace Ombi.DependencyInjection
 {
@@ -79,7 +78,6 @@ namespace Ombi.DependencyInjection
             services.AddTransient<IMovieRequestEngine, MovieRequestEngine>();
             services.AddTransient<ITvRequestEngine, TvRequestEngine>();
             services.AddTransient<ITvSearchEngine, TvSearchEngine>();
-            services.AddTransient<IMusicSearchEngine, MusicSearchEngine>();
             services.AddTransient<IRuleEvaluator, RuleEvaluator>();
             services.AddTransient<IMovieSender, MovieSender>();
             services.AddTransient<IRecentlyAddedEngine, RecentlyAddedEngine>();
@@ -98,7 +96,6 @@ namespace Ombi.DependencyInjection
             services.AddSingleton<IApi, Api.Api>();
             services.AddSingleton<IOmbiHttpClient, OmbiHttpClient>(); // https://blogs.msdn.microsoft.com/alazarev/2017/12/29/disposable-finalizers-and-httpclient/
             services.AddTransient<IMovieDbApi, Api.TheMovieDb.TheMovieDbApi>();
-            services.AddTransient<IMusicBrainzApi, MusicBrainzApi>();
             services.AddTransient<IPlexApi, PlexApi>();
             services.AddTransient<IEmbyApi, EmbyApi>();
             services.AddTransient<ISonarrApi, SonarrApi>();

@@ -8,7 +8,6 @@ import { TreeNode } from "primeng/primeng";
 import { ISearchMovieResult } from "../interfaces";
 import { ISearchTvResult } from "../interfaces";
 import { ServiceHelpers } from "./service.helpers";
-import { ISearchMusicResult } from "../interfaces/ISearchMusicResult";
 
 @Injectable()
 export class SearchService extends ServiceHelpers {
@@ -38,11 +37,6 @@ export class SearchService extends ServiceHelpers {
     }
     public getMovieInformation(theMovieDbId: number): Observable<ISearchMovieResult> {
         return this.http.get<ISearchMovieResult>(`${this.url}/Movie/info/${theMovieDbId}`);
-    }
-
-    // Music
-    public searchMusic(searchTerm: string): Observable<ISearchMusicResult[]> {
-        return this.http.get<ISearchMusicResult[]>(`${this.url}/Music/${searchTerm}`, {headers: this.headers});
     }
 
     // TV

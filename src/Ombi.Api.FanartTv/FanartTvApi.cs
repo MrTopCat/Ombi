@@ -41,13 +41,5 @@ namespace Ombi.Api.FanartTv
 
             return await Api.Request<MovieResult>(request);
         }
-
-        public async Task<ArtistResult> GetArtistImages(string musicBrainzID, string token)
-        {
-            var request = new Request($"music/{musicBrainzID}", Endpoint, HttpMethod.Get);
-            request.AddHeader("api-key", token);
-
-            return await Api.Request<ArtistResult>(request);
-        }
     }
 }

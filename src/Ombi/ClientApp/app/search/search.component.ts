@@ -9,7 +9,6 @@ import { IssuesService, SettingsService } from "./../services";
 export class SearchComponent implements OnInit  {
     public showTv: boolean;
     public showMovie: boolean;
-    public showMusic: boolean;
     public issueCategories: IIssueCategory[];
     public issuesEnabled = false;
 
@@ -21,7 +20,6 @@ export class SearchComponent implements OnInit  {
     public ngOnInit() {
         this.showMovie = true;
         this.showTv = false;
-        this.showMusic = false;
         this.issuesService.getCategories().subscribe(x => this.issueCategories = x);
         this.settingsService.getIssueSettings().subscribe(x => this.issuesEnabled = x.enabled);
     }
@@ -29,18 +27,10 @@ export class SearchComponent implements OnInit  {
     public selectMovieTab() {
         this.showMovie = true;
         this.showTv = false;
-        this.showMusic = false;
     }
 
     public selectTvTab() {
         this.showMovie = false;
         this.showTv = true;
-        this.showMusic = false;
-    }
-
-    public selectMusicTab() {
-        this.showMovie = false;
-        this.showTv = false;
-        this.showMusic = true;
     }
 }
